@@ -1,0 +1,45 @@
+How to provision a Pi
+
+Download the OS image .zip provided by http://www.raspberrypi.org/downloads
+Unzip
+
+In the terminal:
+locate the disk number for the SD card
+	On a mac, " diskutil list " will provide a display of each device and volume. The identifier you want is going to look like " /dev/disk2 " and the volumes 
+
+sudo dd if=<path_of_your_image.img> of=/dev/r<diskn> bs=1m
+
+When done, eject the SD card and install in a Pi, give the Pi power and wait a few minutes for it to boot and configure itself.
+
+Give the Pi an IP address on your network; for example, use your machine to bridge wifi to ethernet, and read your registry of assigned DHCP addresses in (on a mac) /private/var/db/dhcpd_leases
+ssh into the Pi:
+	ssh pi@<pi's IP address>
+	When prompted for a password, provide "raspberry"
+
+------
+NOTE: If you receive a scary warning about RSA keys, you have probably authenticated with a previous device over SSH using the same IP address. This is fine, but means you need to delete the previous entry in your known_hosts file.
+This is located (on a mac) at /private/var/db/dhcpd_leases
+Delete the line that corresponds to the IP address you are trying to use.
+------
+
+
+First, run " sudo raspi-config " to launch the configuration utility
+	In "Advanced Options," update the config utility itself
+	On the main menu, run "Expand Filesystem"
+	Finish, and DO NOT reboot.
+	
+Run:
+
+sudo apt-get update
+sudo apt-get upgrade -y
+
+THIS MIGHT TAKE A WHILE; go get a coffee.
+When done reboot the Pi; sudo shutdown -r now && exit
+Wait a few minutes, and SSH in again; ssh pi@<pi's IP address>
+Verify you can connect, and then shut down; sudo shutdown -h now && exit
+	Alternatively, take this time to install additional tools or resources. For example, running the Setup.sh script contained in this repository. Then shut down.
+When the only LED turned on is the RED power light, unplug the Pi.
+
+Done!
+
+For imaging a large number of SD cards, it may be beneficial to perform a raw copy of the card at this point, and image it onto future cards instead of the fresh image. For this you can perform another dd command; dd
